@@ -1,0 +1,236 @@
+ 
+
+/* Advanced Persian Blog Advertisement by Reza Hashemi. Reza at persianblog.com */
+
+var AD_2897_timerCloseAd=0,AD_2897_timerFade=0,AD_2897_timerRedo=0,AD_2897_opacity=0,AD_2897_mode=0;
+var AD_2897_windowWidth=0,AD_2897_windowHeight=0;
+var AD_2897_timeoutCloseAd=180000,AD_2897_timeoutStart=1,AD_2897_timeoutRedo=0;
+var AD_2897_layers=new Array('AD_2897_HEAD','AD_2897_HEAD');
+var myadmarq;
+
+/*************** start phase ****************/
+function AD_2897_init() {
+
+AD_2897_mode=2;
+
+if (AD_2897_timerRedo) clearTimeout(AD_2897_timerRedo);
+
+	AD_2897_reloadPage();
+if (AD_2897_clientWindowSize) {
+	if(AD_2897_timeoutStart)
+	AD_2897_timerStart=setTimeout("AD_2897_start()",AD_2897_timeoutStart);
+	}
+else {
+	if(AD_2897_timeoutRedo)
+	AD_2897_timerRedo=setTimeout("AD_2897_init()",AD_2897_timeoutRedo);
+	}
+
+return false;
+}
+/***************** frameset *****************/
+
+function AD_2897_clientWindowSize() {
+	var ad=1;
+		
+	if (self.innerWidth) {
+		AD_2897_windowWidth=self.innerWidth;
+		AD_2897_windowHeight=self.innerHeight;
+	} else if (document.documentElement && document.documentElement.clientWidth) {
+		AD_2897_windowWidth=document.documentElement.clientWidth;
+		AD_2897_windowHeight=document.documentElement.clientHeight;
+	} else if (document.body) {
+		AD_2897_windowWidth=document.body.clientWidth;
+		AD_2897_windowHeight=document.body.clientHeight;
+	}
+	if (document.layers||navigator.userAgent.toLowerCase().indexOf("gecko")>=0) AD_2897_windowWidth-=16;
+	
+
+	if (AD_2897_windowWidth<300) ad=0;
+	if (AD_2897_windowHeight<80) ad=0;
+	return ad;
+}
+
+/***************** layers functions *****************/
+
+function AD_2897_findObj(n, d) { 
+      var obj=null;
+	if (document.getElementById) {
+	 obj=document.getElementById(n);
+	 } else if (document.layers && document.layers[n]) {
+	 obj=document.layers[n];
+	 } else if (document.all) {
+	 obj=document.all[n];
+	 } 
+      return(obj);
+}
+
+function AD_2897_showHideLayers() { 
+	var i,p,v,w,obj,args=AD_2897_showHideLayers.arguments;
+
+	for (i=0; i<(args.length-1); i+=2) if ((obj=AD_2897_findObj(args[i]))!=null) { 
+		v=args[i+1];
+		if (obj.style) { 
+		obj=obj.style;
+		v=(v=='show')?'visible':(v='hide')?'hidden':v; 
+		}
+		obj.visibility=v;
+	 }
+}
+
+function AD_2897_fade(fadeStep) {
+	if (AD_2897_timerFade) clearTimeout(AD_2897_timerFade);
+	var i=0;
+	for(i=0;i<2;i++) {
+		obj=AD_2897_findObj(AD_2897_layers[i]);
+		AD_2897_opacity=AD_2897_opacity + fadeStep;
+		if(obj.style){
+			if (obj.filters) {
+				if (obj.style.filter) {
+					obj.filters.alpha.opacity=AD_2897_opacity;
+				} else {
+					obj.style.filter="alpha(opacity=0)";
+					obj.filters.alpha.opacity=AD_2897_opacity;
+				}
+			} else {
+				obj.style.MozOpacity=0;
+				obj.style.MozOpacity=AD_2897_opacity/100;
+			}
+		}
+		if(AD_2897_opacity<100 && AD_2897_opacity>0) {
+			AD_2897_timerFade=setTimeout('AD_2897_fade('+fadeStep+')',100);
+		}
+	}
+}
+
+function AD_2897_setPos(layer,left,top) {
+	var obj=AD_2897_findObj(layer);
+	
+	if (obj.style) {
+		if (document.all) {
+			if (left!='') obj.style.pixelLeft=left;
+			if (top!='') obj.style.pixelTop=top;
+		} else {
+			if (left!='') obj.style.left=left;
+			if (top!='') obj.style.top=top;
+		}
+	} else {
+		if (left!='') obj.left=left;
+		if (top!='') obj.top=top;
+	}
+}
+
+
+/***************** events *****************/
+
+function AD_2897_close() {
+	if (AD_2897_timerFade) clearTimeout(AD_2897_timerFade);
+	if (AD_2897_timerCloseAd) clearTimeout(AD_2897_timerCloseAd);
+	AD_2897_opacity=100; 
+	AD_2897_fade(1);
+	AD_2897_mode=4;
+	AD_2897_reloadPage();
+
+}
+
+function AD_2897_start() {
+	if (AD_2897_timerStart) clearTimeout(AD_2897_timerStart);
+	if (AD_2897_timerFade) clearTimeout(AD_2897_timerFade);
+	if (AD_2897_timerCloseAd) clearTimeout(AD_2897_timerCloseAd);
+	AD_2897_fade(1);
+      AD_2897_mode=3;
+	AD_2897_reloadPage();
+
+	if(AD_2897_timeoutCloseAd)
+	AD_2897_timerCloseAd=setTimeout("AD_2897_close()",AD_2897_timeoutCloseAd);
+
+
+}
+
+function AD_2897_reloadPage() {
+	AD_2897_clientWindowSize();
+	onresize=AD_2897_reloadPage;	 
+
+	if (AD_2897_clientWindowSize) {
+		AD_2897_setPos('AD_2897_CLOSE',AD_2897_windowWidth-140,'');
+		AD_2897_setPos('AD_2897_HEAD',AD_2897_windowWidth-640,'');
+	}
+
+	if(AD_2897_mode==4)
+	AD_2897_showHideLayers('AD_2897_HEAD','hide','AD_2897_CLOSE','show');
+
+	if(AD_2897_mode==3)
+	AD_2897_showHideLayers('AD_2897_CLOSE','hide','AD_2897_HEAD','show');
+
+
+
+}
+
+/***************** init layers *****************/
+
+function AD_2897_drawLayers() {
+
+if (AD_2897_mode) return;
+else AD_2897_mode=1;
+
+
+document.writeln('<style type="text/css">\n.adstyle1 {font-family:verdana,helvetica,arial;font-size:10px;color:white;font-weight:bold;text-decoration:none;}\n.adstyle2 {font-family:verdana,helvetica,arial;font-size:12px;color:white;font-weight:bold;text-decoration:none;}\n</style>\n');
+
+document.writeln('<div id="AD_2897_CLOSE" dir="ltr" style="position:absolute; width:140px; left:0px; top:0px; visibility:hidden; z-index:2000; overflow: hidden;">'+
+'<table border="0" cellpadding="0" cellspacing="0">'+
+'<tr><td ><img src="http://www.persianblog.com/images/rcorner.gif" width="20" height="20" border="0"></td>'+
+'<td width="101" height="20" align="center" bgcolor="white" style="border-bottom: 1 solid #808080;" ><a href="javascript:void(0)" onclick="AD_2897_start();return false;" style="font-family:arial;font-size:9pt;text-decoration:none;color:#000000;">Advertisement</a></td>'+
+'<td width="20" bgcolor="white" style="border-bottom: 1 solid #808080"><a href="javascript:void(0)" onclick="AD_2897_start();return false;"><img src="http://www.persianblog.com/images/replayicon.gif" width="20" height="19" border="0"></td>'+
+'</tr></table>'+
+'</div>');
+
+document.writeln('<div id="AD_2897_HEAD" dir="ltr" style="position:absolute; width:640px; top:0px; left:0px; visibility:hidden; z-index:2001;">'+
+'<table border="0" cellpadding="0" cellspacing="0"><tr><td>'+
+'<table border="0" cellpadding="0" cellspacing="0">'+
+'<tr><td><img src="http://www.persianblog.com/images/lcorner.gif" width="20" height="20" border="0"></td></tr>'+
+'<tr height="61"><td height="61" style="border-left: 1px solid #808080; border-bottom: 1 solid #808080" bgcolor="#f4f4f4">&nbsp</td></tr>'+
+'</table></td><td>'+
+'<table border="0" cellpadding="0" cellspacing="0">'+
+'<tr height="81"><td align="top" height="81" width="480" bgcolor="#f4f4f4" rowspan="2" style="border-top: 1px solid #808080; border-bottom: 1 solid #808080" valign="middle" align="center">'+
+'<div align="center" valign="center">');
+
+document.writeln('<table border="0" bordercolor="" cellpadding="0" cellspacing="0"><tr><td><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=4,0,2,0" width="468" height="60"><param name=movie value="http://admanager.persianblog.com/Banners/persianblog/persianblog.swf"><param name=quality value=high><embed src="http://admanager.persianblog.com/Banners/persianblog/persianblog.swf" quality=high pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="468" height="60"></embed></object><br><div align="center"><a style="text-decoration:underline;font-family:Tahoma;font-size:9pt;" href="http://admanager.persianblog.com/processASPClick.asp?bannerID=455" target="_blank">www.PERSIANBLOG.com</a></div></td></tr></table>'); 
+
+document.writeln('</div></td></tr></table></td><td>'+
+'<table border="0" cellpadding="0" cellspacing="0">'+
+'<tr><td bgcolor="#f4f4f4"><img src="http://www.persianblog.com/images/rcorner.gif" width="20" height="20" border="0"></td></tr>'+
+'<tr height="61"><td height="61" style=" border-bottom: 1 solid #808080" bgcolor="#f4f4f4">&nbsp</td></tr>'+
+'</table></td><td>'+
+'<table border="0" cellpadding="0" cellspacing="0" width="121">'+
+'<tr><td align="center" width="101" height="20" bgcolor="white" style="border-bottom: 1 solid #808080;font-size:9pt" ><a href="http://www.persianblog.com/ads.asp" target="_blank" style="font-family:arial;font-size:9pt;text-decoration:none;color:#000000;">Advertise Here</a></td>'+
+'<td width="20" bgcolor="white" style="border-bottom: 1 solid #808080"><a href="javascript:void(0)" onclick="AD_2897_close();return false;" ><img src="http://www.persianblog.com/images/closeicon.gif" width="20" height="19" border="0"></a></td>'+
+'</tr><tr height="60">'+
+'<td height="60" colspan="2" style="border-right: 1px solid #808080; border-bottom: 1 solid #808080"><a href="http://www.persianblog.com/ads.asp" target="_blank" style="font-family:arial;font-size:9pt;text-decoration:none;color:#000000;"><img onload="ADV_dispatcher();return false;" src="http://www.persianblog.com/images/pb-ads.gif" width="120" height="60" border="0"></a></td>'+
+'</tr></table></td></tr></table>'+
+'</div>');
+
+}
+/****** ADV_Dispatcher *************/
+function ADV_dispatcher() {
+
+ if ( (AD_2897_mode==3) || (AD_2897_mode==4) ) {
+ AD_2897_reloadPage();
+ } 
+ else if (AD_2897_mode==0){
+ var oldonload;
+ 
+ AD_2897_drawLayers();
+ oldonload=window.onload;
+ window.onload=ADV_dispatcher;
+ window.onresize=ADV_dispatcher;
+ window.onfocus=ADV_dispatcher;
+ myadmarq=document.getElementById("ChanTable");
+ if (myadmarq!=null) myadmarq.start();
+
+ if ( oldonload!=window.onload && oldonload!=null) oldonload();
+
+ } else {
+ AD_2897_init();
+ }
+
+}
+
